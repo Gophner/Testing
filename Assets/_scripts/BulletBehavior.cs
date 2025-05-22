@@ -8,7 +8,7 @@ public class BulletBehavior : MonoBehaviour
 
     private Rigidbody2D rigidbody;
 
-    [SerializeField] float distance_to_top_of_screen;
+    [SerializeField] float distance_to_top_of_screen, distance_to_bottom_of_screen;
 
     void Awake() 
     {
@@ -17,12 +17,11 @@ public class BulletBehavior : MonoBehaviour
     void Start()
     {
         rigidbody.linearVelocity = direction * speed;
-        //Debug.Log(rigidbody.linearVelocity);
     }
 
     void Update()
     {
-        if (transform.position.y > distance_to_top_of_screen){
+        if (transform.position.y > distance_to_top_of_screen || transform.position.y < distance_to_bottom_of_screen){
             Destroy(gameObject);
         }
     }
