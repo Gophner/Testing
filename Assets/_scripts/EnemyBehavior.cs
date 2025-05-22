@@ -4,7 +4,7 @@ public class EnemyBehavior : MonoBehaviour
 {
     public float speed_x, speed_y; 
     private int direction = 1;
-    [SerializeField] private float rightBorder, leftBorder;
+    public float rightBorder, leftBorder;
 
     private Rigidbody2D rigidbody;
 
@@ -37,9 +37,19 @@ public class EnemyBehavior : MonoBehaviour
             GameObject enemyBullet = Instantiate(bulletPrefab);
             enemyBullet.transform.position = transform.position + new Vector3(0,-1,0);
             enemyBullet.transform.rotation = Quaternion.Euler(0,0,180);
+            
+            enemyBullet.tag = "Enemy_Bullet";
 
             BulletBehavior bulletBehavior = enemyBullet.GetComponent<BulletBehavior>();
             bulletBehavior.direction = Vector2.down;
+        }
+    }
+
+        void OnTriggerEnter2D(Collider2D collider) {
+        if (collider.tag == "Player_Bullet") {
+            Debug.Log("Enemy hit by bullet");
+            Destroy(collider.gameObject);
+            Destroy(gameObject);
         }
     }
 }

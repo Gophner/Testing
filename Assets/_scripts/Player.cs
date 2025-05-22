@@ -6,8 +6,10 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     private Rigidbody2D rigidbody;
+    private int hp = 10;
 
     [SerializeField] private GameObject bulletPrefab;  
+    [SerializeField] private float speed;
 
     void Awake() 
     {
@@ -18,17 +20,23 @@ public class Player : MonoBehaviour
     {
         rigidbody.linearVelocity = Vector2.zero;
         if (Input.GetKey(KeyCode.W)) {
-            rigidbody.linearVelocity += Vector2.up;
+            rigidbody.linearVelocity += speed*Vector2.up;
         }
         if (Input.GetKey(KeyCode.S)) {
-            rigidbody.linearVelocity += Vector2.down;
+            rigidbody.linearVelocity += speed*Vector2.down;
         }
         if (Input.GetKey(KeyCode.A)) {
-            rigidbody.linearVelocity += Vector2.left;
+            rigidbody.linearVelocity += speed*Vector2.left;
         }
         if (Input.GetKey(KeyCode.D)) {
-            rigidbody.linearVelocity += Vector2.right;
+            rigidbody.linearVelocity += speed*Vector2.right;
         }
+
+        if (rigidbody.linearVelocity.magnitude > 5){
+                rigidbody.linearVelocity *= 1/Mathf.Sqrt(2);
+        }
+
+        Debug.Log(rigidbody.linearVelocity.magnitude);
 
         if (Input.GetKeyDown(KeyCode.Space)) {
             SpawnBullet();
@@ -38,10 +46,22 @@ public class Player : MonoBehaviour
         {
             GameObject newBullet = Instantiate(bulletPrefab);
             newBullet.transform.position = transform.position + new Vector3(0,1,0);
+            newBullet.tag = "Player_Bullet";
         }
 
     }
 
+        void OnTriggerEnter2D(Collider2D collider) {
+        if (collider.tag == "Enemy_Bullet") {
+            Debug.Log("Player hit by bullet");
+            Destroy(collider.gameObject);
+
+            hp--;
+            if (hp <= 0) {
+                Destroy(gameObject);
+            }
+        }
+    }
     
 }
 
